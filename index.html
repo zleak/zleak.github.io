@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8"> <title>Getting Zing TV direct links</title>
+    <meta name="description" content="Getting Zing TV direct links">
+    <link href="http://designmodo.github.io/Flat-UI/dist/css/vendor/bootstrap.min.css" rel="stylesheet">
+    <link href="http://designmodo.github.io/Flat-UI/dist/css/flat-ui.min.css" rel="stylesheet">
+    <link href="http://designmodo.github.io/Flat-UI/docs/assets/css/demo.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href="http://vjs.zencdn.net/4.5/video-js.css" rel="stylesheet" />
+    <script src="http://vjs.zencdn.net/4.5/video.js"></script>
+
+    <link href="static/videojs-resolution-selector/button-styles.css" rel="stylesheet" type="text/css" />
+
+    <script src="static/videojs-resolution-selector/video-quality-selector.js"></script>
+
+    <style type="text/css">
+        body {
+        }
+	  .vjs-default-skin .vjs-control-bar { font-size: 100% }
+		.fullscreen {
+			min-height:100%
+		}
+		body > video {
+			min-height:100%;
+		}
+		* {
+			margin: 0;
+		}
+
+		#video{
+                  height: 80%;
+                  border: 2px solid;
+                  border-radius: 5px;
+                  padding: 5px;
+                  background-color: #000;
+                  top: 10%;
+                  bottom: 5%;
+                  position:absolute;
+                  left: 5%;
+                  right: 5%;
+		}
+
+		.container {
+			padding: 5% 10% 5% 10%;
+			height:100%;
+			width:100%;
+			-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+			-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+			box-sizing: border-box;         /* Opera/IE 8+ */
+		}
+
+		#videobody{
+		  height: 100%;
+		  position: absolute;
+		  width: 100%;
+		}
+
+	  .vjs-default-skin .vjs-big-play-button {
+		left: 40%;
+		width:20%;
+		top: 40%;
+
+	  }
+	  .vjs-playing .vjs-big-play-button { display: none; }
+    </style>
+
+  </head>
+  <body class="fullscreen">
+    <div id="inputbody">
+      <br> <br> <br> <br>
+      <div id="myForm" style="width:60%;margin:auto" class="form-group login-form">
+        <div class="form-group">
+          <input name="url" type="text" class="form-control login-field" value="http://tv.zing.vn/video/One-Piece-Tap-645/IWZA678D.html" onclick="this.select();" id="url">
+          <label class="login-field-icon" for="login-name"></label>
+        </div>
+        <center>
+          <a onclick="leak()" class="btn btn-primary btn-lg btn-block" href="#processing">Watch...</a>
+        </center>
+      </div>
+    </div>
+
+  <div id="videobody" style="display:none">
+    <center class="container">
+      <p id="videoname" style="z-index:2; position:fixed; left:5%;top:5%;font-family: monospace;font-size:1em;color:#000;text-transform:lowercase;font-weight:bold;">One Piece - Tập 646</p>
+      <div style="position:fixed; top:5%;left:40%; right: 40%;font-size:1em;font-family: monospace;color:#000;text-transform:lowercase;font-weight:bold;">
+      <a style="text-decoration:none;" href="#home" onclick="goHome()" > << home >> </a>
+      </div>
+      <a href="#next-chapter" onclick="leakWithID(nextid)" style="position:fixed; float:right;right:5%;top:5%;font-size:1em;font-family: monospace;color:#000;text-transform:lowercase;font-weight:bold;text-decoration:none;">next chapter >></a>
+      <div id="video">
+      <video onended="goToNextVideo();" id="my-video0" class="video-js vjs-default-skin middle" controls="true"  preload="yes" width="100%" height="100%" >
+      </video> </div>
+    </center>
+  </div>
+</body>
+  <script>
+    jQuery.ajax=function(e){function o(e){return!r.test(e)&&/:\/\//.test(e)}var t=location.protocol,n=location.hostname,r=RegExp(t+"//"+n),i="http"+(/^https/.test(t)?"s":"")+"://query.yahooapis.com/v1/public/yql?callback=?",s='select * from html where url="{URL}" and xpath="*"';return function(t){var n=t.url;if(/get/i.test(t.type)&&!/json/i.test(t.dataType)&&o(n)){t.url=i;t.dataType="json";t.data={q:s.replace("{URL}",n+(t.data?(/\?/.test(n)?"&":"?")+jQuery.param(t.data):"")),format:"xml"};if(!t.success&&t.complete){t.success=t.complete;delete t.complete}t.success=function(e){return function(t){if(e){e.call(this,{responseText:(t.results[0]||"").replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/gi,"")},"success")}}}(t.success)}return e.apply(this,arguments)}}(jQuery.ajax);
+    getID = function(url) {
+      id = /\/([0-9A-Za-z]+).html$/.exec(url)[1];
+      id = Array.prototype.map.call(id, function(c) {
+        if ("IWOUZ".indexOf(c) === -1) return c;
+        else return ({"I": '1', "W": '2', "O": '3', "U": '4', "Z": '5'})[c];
+      } ).join("");
+      id = parseInt(id, 16) - 307843200;
+      return id;
+    };
+
+
+    counter = 0;
+    playerRender = function(json) {
+        console.log( json );
+        urls = json.response.download_url;
+        nextid = json.response.next_media_id;
+        $('link[rel=stylesheet][href*="designmodo.github.io"]').prop('disabled', true);
+        $("#inputbody").hide();
+        $("#videobody").show();
+        $("#videoname").text(json.response.full_name);
+        $("video").remove();
+        if (typeof player != 'undefined') { console.log("Delete player"); player.pause(); player.src(""); }
+        $("#my-video" + counter).remove();
+        counter++;
+        $("#video").append('<video onended="goToNextVideo();" id="my-video' + counter + '" class="video-js vjs-default-skin middle" controls="true"  preload="yes" width="100%" height="100%" ></video>');
+
+        for (var hd in json.response.download_url) {
+          console.log(hd);
+          console.log(hd + " : " + json.response.download_url[hd]);
+          $("video").append("<source  data-res='" + hd + "' src='http://" + json.response.download_url[hd] + "' type='video/mp4'>");
+        }
+        videojs( '#my-video' + counter, { plugins : { resolutionSelector : { default_res : "Video720" } } }, function() {
+                player = this;
+                player.on( 'changeRes', function() {
+                        console.log( 'Current Res is: ' + player.getCurrentRes() );
+                        // player.addEventListener("ended", function () { goToNextVideo(); });
+                });
+        });
+    };
+
+    leakWithID = function (id) {
+      console.log("Media ID: " + id);
+      var api = "http://api.tv.zing.vn/2.0/media/info?api_key=7d3343b073f9fb9ec75e53335111dcc1&media_id=" + id;
+      $.get(api, function(res) {
+        json = $.parseJSON($(res.responseText).text());
+        playerRender(json);
+      });
+    };
+
+    leak = function() {
+      var url = $("#url").val();
+      console.log("Your link is " + url);
+      var id = getID(url);
+      leakWithID(id);
+    };
+
+
+
+    goHome = function () {
+        player.pause();
+        player.src("");
+        $('link[rel=stylesheet][href*="designmodo.github.io"]').removeAttr('disabled');
+        $("#inputbody").show();
+        $("#videobody").hide();
+    };
+  </script>
+
+</html>
